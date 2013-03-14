@@ -1,0 +1,53 @@
+(ns band-names.core
+  (:use [clojure.string :exclude [reverse replace]]
+        [clojure.math.numeric-tower]
+        [inflections.core :exclude [capitalize]]))
+
+(def band-names (sort (distinct (rest (split-lines (slurp "band_names.txt"))))))
+
+(def nouns (split-lines (slurp "nouns/91K nouns.txt")))
+
+(def adjectives (split-lines (slurp "adjectives/28K adjectives.txt")))
+
+(def verbs (split-lines (slurp "verbs/31K verbs.txt")))
+
+(def adverbs (split-lines (slurp "adverbs/6K adverbs.txt")))
+
+(defmacro rand-do [& forms]
+  `(case (rand-int ~(count forms))
+     ~@(mapcat list (iterate inc 0) forms)))
+
+(defn adjective-noun-band-name []
+  (join " "
+        (map capitalize
+             (concat (repeatedly (dec (* 3 (rand))) #(rand-nth adjectives))
+                     [(rand-nth nouns)]))))
+
+(defn verb-noun-band-name []
+  (join " "
+        (map capitalize
+             [(rand-nth verbs)
+              (rand-nth nouns)])))
+ 
+(defn noun-number-band-name []
+  (str (capitalize (rand-nth nouns))
+       " "
+       (inc (rand-int 99)))) 
+
+(defn generate-band-name []
+  (rand-do (adjective-noun-band-name)
+           (verb-noun-band-name)
+           (str "The " (plural (verb-noun-band-name)))
+           (str "Very " (adjective-noun-band-name))
+           (str "The " (plural (adjective-noun-band-name)))
+           (noun-number-band-name)))
+
+
+(defn quiz-name []
+  (let [real-name (rand-nth band-names)
+        false-name (generate-band-name)]
+    (print (str "Which band is real? \n"))
+    (doseq [index [1 2]
+            name (shuffle (list real-name false-name))]
+      (print (str index " " name "\n")))))
+                (map list (iterate inc 1) (shuffle (list real-name false-name)))))))
