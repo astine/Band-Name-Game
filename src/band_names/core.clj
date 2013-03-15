@@ -18,6 +18,14 @@
 
 (def prepositions (slurp-lines "resources/prepositions/prepositions.txt"))
 
+(def male-names (slurp-lines "resources/names/male-first-names.txt"))
+(def female-names (slurp-lines "resources/names/female-first-names.txt"))
+(def last-names (slurp-lines "resources/names/last-names.txt"))
+
+(def rap-first-names (slurp-lines "resources/rap-names/first-names.txt"))
+(def rap-middle-names (slurp-lines "resources/rap-names/middle-names.txt"))
+(def rap-last-names (slurp-lines "resources/rap-names/last-names.txt"))
+
 (defmacro rand-do [& forms]
   `(case (rand-int ~(count forms))
      ~@(mapcat list (iterate inc 0) forms)))
@@ -47,6 +55,25 @@
        (rand-nth prepositions)
        " "
        (capitalize (rand-nth nouns))))
+
+(defn musician-name []
+  (str (capitalize (rand-do
+                    (rand-nth male-names)
+                    (rand-nth female-names)))
+       " "
+       (capitalize (rand-nth last-names))))
+
+(defn rapper-name []
+  (join " "
+        (map capitalize
+             (remove nil?
+                     [(rand-do
+                       (rand-nth rap-first-names)
+                       nil)
+                      (rand-do
+                       (rand-nth rap-middle-names)
+                       nil)
+                      (rand-nth rap-last-names)]))))
 
 (def misspellings [[#"(ck|c)" "k"]
                    ["s" "z"]
@@ -81,6 +108,10 @@
            (noun-preposition-noun-band-name)
            (verb-noun-band-name)
            (verb-noun-band-name)
+           (musician-name)
+           (musician-name)
+           (musician-name)
+           (rapper-name)
            (str "The " (plural (verb-noun-band-name)))
            (str "The " (plural (adjective-noun-band-name)))
            (str "The " (plural (noun-preposition-noun-band-name)))
