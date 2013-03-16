@@ -7,6 +7,7 @@
   (split-lines (slurp file)))
 
 (def band-names (sort (distinct (rest (slurp-lines "resources/band_names.txt")))))
+(def band-names-set (set band-names))
 
 (def nouns (slurp-lines "resources/nouns/91K nouns.txt"))
 
@@ -76,7 +77,18 @@
                       (rand-nth rap-last-names)]))))
 
 (def misspellings [[#"(ck|c)" "k"]
+                   ["in" "n"]
+                   ["in" "'n"]
+                   ["own" "one"]
+                   ["one" "own"]
+                   ["ea" "ee"]
+                   ["ti" "sh"]
                    ["s" "z"]
+                   ["y " "i "]
+                   [#"y$" "i"]
+                   ["i" "y"]
+                   ["r" "rr"]
+                   ["g" "gg"]
                    ["through" "thru"]
                    ["ew" "u"]
                    ["oo" "ew"]
@@ -88,34 +100,45 @@
                    ["great" "gr8"]
                    ["ks" "x"]
                    ["x" "ks"]
+                   ["x" "xxx"]
                    ["you" "u"]
                    ["your" "yur"]
                    ["wh" "w"]
                    ["what" "wut"]])
 
-(defn misspell [phrase]
+(defn misspell [phrase] ;TODO make these case independent
   (reduce #(apply clojure.string/replace (cons %1 %2))
           phrase
           (distinct (repeatedly (inc (rand-int (dec (count misspellings))))
                                 #(rand-nth misspellings)))))
 
+(defn band-name-exists? [band-name]
+  (boolean (band-names-set band-name)))
+
+(defn band-name-available? [band-name]
+  (if (not (band-name-exists? band-name))
+    band-name
+    false))
+
 (defn generate-band-name []
-  (rand-do (adjective-noun-band-name)
-           (adjective-noun-band-name)
-           (adjective-noun-band-name)
-           (misspell (adjective-noun-band-name))
-           (noun-preposition-noun-band-name)
-           (noun-preposition-noun-band-name)
-           (verb-noun-band-name)
-           (verb-noun-band-name)
-           (musician-name)
-           (musician-name)
-           (musician-name)
-           (rapper-name)
-           (str "The " (plural (verb-noun-band-name)))
-           (str "The " (plural (adjective-noun-band-name)))
-           (str "The " (plural (noun-preposition-noun-band-name)))
-           (noun-number-band-name)))
+  (or (band-name-available?
+       (rand-do (adjective-noun-band-name)
+                (adjective-noun-band-name)
+                (adjective-noun-band-name)
+                (misspell (adjective-noun-band-name))
+                (noun-preposition-noun-band-name)
+                (noun-preposition-noun-band-name)
+                (verb-noun-band-name)
+                (verb-noun-band-name)
+                (musician-name)
+                (musician-name)
+                (musician-name)
+                (rapper-name)
+                (str "The " (plural (verb-noun-band-name)))
+                (str "The " (plural (adjective-noun-band-name)))
+                (str "The " (plural (noun-preposition-noun-band-name)))
+                (noun-number-band-name)))
+      (generate-band-name)))
 
 
 (defn quiz-name []
