@@ -1,6 +1,9 @@
 (ns band-names.core
-  (:use [clojure.string :exclude [reverse replace]]
+  (:refer-clojure :exclude [rand-int rand-nth rand])
+  (:use [band-names.syllables :exclude [slurp-lines]]
+        [clojure.string :exclude [reverse replace]]
         [clojure.math.numeric-tower]
+        [roul.random]
         [inflections.core :exclude [capitalize]]))
 
 (defn slurp-lines [file]
@@ -28,8 +31,11 @@
 (def rap-last-names (slurp-lines "resources/rap-names/last-names.txt"))
 
 (defmacro rand-do [& forms]
-  `(case (rand-int ~(count forms))
-     ~@(mapcat list (iterate inc 0) forms)))
+  (let [forms (partition 2 forms)
+        weights (map first forms)
+        forms (map second forms)]
+    `(case (rand-nth-weighted ~(vec (map vector (iterate inc 0) weights)))
+       ~@(mapcat list (iterate inc 0) forms))))
 
 (defn adjective-noun-band-name []
   (join " "
@@ -47,8 +53,8 @@
   (str (capitalize (rand-nth nouns))
        " "
        (rand-do
-        (capitalize (clojure.pprint/cl-format false "~R" (inc (rand-int 99))))
-        (inc (rand-int 99)))))
+        1 (capitalize (clojure.pprint/cl-format false "~R" (inc (rand-int 99))))
+        1 (inc (rand-int 99)))))
 
 (defn noun-preposition-noun-band-name []
   (str (capitalize (rand-nth nouns))
@@ -59,8 +65,8 @@
 
 (defn musician-name []
   (str (capitalize (rand-do
-                    (rand-nth male-names)
-                    (rand-nth female-names)))
+                    1 (rand-nth male-names)
+                    1 (rand-nth female-names)))
        " "
        (capitalize (rand-nth last-names))))
 
@@ -69,11 +75,11 @@
         (map capitalize
              (remove nil?
                      [(rand-do
-                       (rand-nth rap-first-names)
-                       nil)
+                       1 (rand-nth rap-first-names)
+                       1 nil)
                       (rand-do
-                       (rand-nth rap-middle-names)
-                       nil)
+                       1 (rand-nth rap-middle-names)
+                       1 nil)
                       (rand-nth rap-last-names)]))))
 
 (def misspellings [[#"(ck|c)" "k"]
@@ -122,22 +128,16 @@
 
 (defn generate-band-name []
   (or (band-name-available?
-       (rand-do (adjective-noun-band-name)
-                (adjective-noun-band-name)
-                (adjective-noun-band-name)
-                (misspell (adjective-noun-band-name))
-                (noun-preposition-noun-band-name)
-                (noun-preposition-noun-band-name)
-                (verb-noun-band-name)
-                (verb-noun-band-name)
-                (musician-name)
-                (musician-name)
-                (musician-name)
-                (rapper-name)
-                (str "The " (plural (verb-noun-band-name)))
-                (str "The " (plural (adjective-noun-band-name)))
-                (str "The " (plural (noun-preposition-noun-band-name)))
-                (noun-number-band-name)))
+       (rand-do 3 (adjective-noun-band-name)
+                1 (misspell (adjective-noun-band-name))
+                2 (noun-preposition-noun-band-name)
+                2 (verb-noun-band-name)
+                3 (musician-name)
+                1 (rapper-name)
+                1 (str "The " (plural (verb-noun-band-name)))
+                1 (str "The " (plural (adjective-noun-band-name)))
+                1 (str "The " (plural (noun-preposition-noun-band-name)))
+                1 (noun-number-band-name)))
       (generate-band-name)))
 
 
@@ -148,3 +148,4 @@
     (doseq [[index name]
             (map list [1 2] (shuffle (list real-name false-name)))]
       (print (str index " " name "\n")))))
+
