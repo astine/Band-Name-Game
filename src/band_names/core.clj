@@ -37,31 +37,76 @@
     `(case (rand-nth-weighted ~(vec (map vector (iterate inc 0) weights)))
        ~@(mapcat list (iterate inc 0) forms))))
 
-(defn adjective-noun-band-name []
-  (join " "
-        (map capitalize
-             (concat (repeatedly (rand-int 3) #(rand-nth adjectives))
-                     [(rand-nth nouns)]))))
+(def syllable-count-distribution
+  [[0 1]
+   [1 3]
+   [2 6]
+   [3 15]
+   [4 28]
+   [5 10]
+   [6 6]
+   [7 3]
+   [8 1]
+   [9 0.5]
+   [10 0.2]
+   [11 0.2]
+   [12 0.2]
+   [13 0.15]
+   [14 0.1]])
 
-(defn verb-noun-band-name []
-  (join " "
-        (map capitalize
-             [(rand-nth verbs)
-              (rand-nth nouns)])))
- 
-(defn noun-number-band-name []
-  (str (capitalize (rand-nth nouns))
-       " "
-       (rand-do
-        1 (capitalize (clojure.pprint/cl-format false "~R" (inc (rand-int 99))))
-        1 (inc (rand-int 99)))))
 
-(defn noun-preposition-noun-band-name []
-  (str (capitalize (rand-nth nouns))
-       ", "
-       (rand-nth prepositions)
+(defn merge-band-name [{:keys [base-word adjectives
+                               verb adverbs
+                               preposition article?
+                               plural? band?]}]
+  (join " " 
+        (map capitalize
+             (remove nil?
+                     (concat (when article?
+                               (if plural?
+                                 [(rand-do 2 "The" 1 "A")]
+                                 ["The"]))
+                             adverbs
+                             [verb]
+                             adjectives
+                             [(if plural? 
+                                (plural base-word)
+                                (singular base-word))]
+                             [preposition]
+                             (if band?
+                               ["Band"]))))))
+
+(defn generate-preposition []
+  (str (rand-nth prepositions)
        " "
        (capitalize (rand-nth nouns))))
+
+(defn band-name-syllables [band-name]
+  (count-syllables (merge-band-name band-name)))
+                            
+(defn basic-band-name []
+  (let [syllables (rand-nth-weighted syllable-count-distribution)
+        band-name {:base-word (rand-nth nouns)}]
+    (loop [band-name band-name]
+      (if (> syllables (band-name-syllables band-name))
+        (rand-do 1 (recur (assoc band-name :adjectives 
+                                 (cons (rand-nth adjectives) (:adjectives band-name))))
+                 1 (if (:verb band-name)
+                     (recur (assoc band-name :adverbs
+                                   (cons (rand-nth adverbs) (:adverbs band-name))))
+                     (recur (assoc band-name :verb (rand-nth verbs))))
+                 1 (recur (assoc band-name :preposition (generate-preposition)))
+                 1 (if (:article? band-name)
+                     (recur band-name)
+                     (recur (assoc band-name :article? true)))
+                 1 (if (:plural? band-name)
+                     (recur band-name)
+                     (recur (assoc band-name :plural? true)))
+                 1 (if (:band? band-name)
+                     (recur band-name)
+                     (recur (assoc band-name :band? true))))
+        (merge-band-name band-name)))))
+    
 
 (defn musician-name []
   (str (capitalize (rand-do
@@ -128,16 +173,10 @@
 
 (defn generate-band-name []
   (or (band-name-available?
-       (rand-do 3 (adjective-noun-band-name)
-                1 (misspell (adjective-noun-band-name))
-                2 (noun-preposition-noun-band-name)
-                2 (verb-noun-band-name)
-                3 (musician-name)
-                1 (rapper-name)
-                1 (str "The " (plural (verb-noun-band-name)))
-                1 (str "The " (plural (adjective-noun-band-name)))
-                1 (str "The " (plural (noun-preposition-noun-band-name)))
-                1 (noun-number-band-name)))
+       (rand-do 9 (basic-band-name)
+                5 (misspell (basic-band-name))
+                10 (musician-name)
+                3 (rapper-name)))
       (generate-band-name)))
 
 
