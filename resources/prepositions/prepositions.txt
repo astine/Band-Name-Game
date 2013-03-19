@@ -1,94 +1,94 @@
-aboard
-about
-above
-across
-after
-against
-along
-alongside
-amid
-amidst
-among
-amongst
-anti
-around
-as
-astride
-at
-atop
-bar
-barring
-before
-behind
-below
-beneath
-beside
-besides
-between
-beyond
-but
-by
-circa
-concerning
-considering
-counting
-cum
-despite
-down
-during
-except
-excepting
-excluding
-following
-for
-from
-given
-gone
-in
-including
-inside
-into
-less
-like
-minus
-near
-notwithstanding
-of
-off
-on
-onto
-opposite
-outside
-over
-past
-pending
-per
-plus
-pro
-re
-regarding
-respecting
-round
-save
-saving
-since
-than
-through
-throughout
-till
-to
-touching
-toward
-towards
-under
-underneath
-unlike
-until
-up
-upon
-versus
-via
-with
-within
-without
-worth
+1 aboard
+2 about
+5 above
+3 across
+14 after
+10 against
+1 along
+1 alongside
+1 amid
+1 amidst
+1 among
+1 amongst
+2 anti
+1 around
+13 as
+1 astride
+22 at
+1 atop
+4 bar
+1 barring
+5 before
+3 behind
+3 below
+4 beneath
+1 beside
+1 besides
+5 between
+13 beyond
+3 but
+21 by
+1 circa
+1 concerning
+1 considering
+1 counting
+1 cum
+1 despite
+11 down
+1 during
+1 except
+1 excepting
+1 excluding
+1 following
+51 for
+21 from
+1 given
+4 gone
+74 in
+1 including
+5 inside
+1 into
+1 less
+7 like
+2 minus
+1 near
+1 notwithstanding
+300 of
+6 off
+36 on
+1 onto
+1 opposite
+1 outside
+2 over
+2 past
+1 pending
+2 per
+2 plus
+1 pro
+1 re
+1 regarding
+1 respecting
+1 round
+1 save
+1 saving
+1 since
+5 than
+4 through
+1 throughout
+2 till
+44 to
+1 touching
+1 toward
+1 towards
+4 under
+1 underneath
+1 unlike
+1 until
+11 up
+1 upon
+1 versus
+1 via
+16 with
+2 within
+1 without
+2 worth

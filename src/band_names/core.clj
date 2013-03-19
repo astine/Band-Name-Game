@@ -12,7 +12,7 @@
 (def band-names (sort (distinct (rest (slurp-lines "resources/band_names.txt")))))
 (def band-names-set (set band-names))
 
-(def nouns (slurp-lines "resources/nouns/91K nouns.txt"))
+(def nouns (map #(let [[n s] (split % #"\s" 2)] [s (read-string n)]) (slurp-lines "resources/nouns/nouns.txt")))
 
 (def adjectives (slurp-lines "resources/adjectives/28K adjectives.txt"))
 
@@ -20,7 +20,7 @@
 
 (def adverbs (slurp-lines "resources/adverbs/6K adverbs.txt"))
 
-(def prepositions (slurp-lines "resources/prepositions/prepositions.txt"))
+(def prepositions (map #(let [[n s] (split % #"\s" 2)] [s (read-string n)]) (slurp-lines "resources/prepositions/prepositions.txt")))
 
 (def male-names (slurp-lines "resources/names/male-first-names.txt"))
 (def female-names (slurp-lines "resources/names/female-first-names.txt"))
@@ -77,16 +77,16 @@
                                ["Band"]))))))
 
 (defn generate-preposition []
-  (str (rand-nth prepositions)
+  (str (rand-nth-weighted prepositions)
        " "
-       (capitalize (rand-nth nouns))))
+       (capitalize (rand-nth-weighted nouns))))
 
 (defn band-name-syllables [band-name]
   (count-syllables (merge-band-name band-name)))
                             
 (defn basic-band-name []
   (let [syllables (rand-nth-weighted syllable-count-distribution)
-        band-name {:base-word (rand-nth nouns)}]
+        band-name {:base-word (rand-nth-weighted nouns)}]
     (loop [band-name band-name]
       (if (> syllables (band-name-syllables band-name))
         (rand-do 1 (recur (assoc band-name :adjectives 
@@ -134,6 +134,7 @@
                    ["one" "own"]
                    ["ea" "ee"]
                    ["ti" "sh"]
+                   [#"\s(and)\s" "n"]
                    ["s" "z"]
                    ["y " "i "]
                    [#"y$" "i"]
