@@ -1,0 +1,91 @@
+body {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    font-family: sans-serif;
+}
+
+#header {
+    background-color: black;
+    color: white;
+    height: 5em;
+    font-size: 225%;
+}
+
+#header {
+    padding: 0.5em;
+    background: -webkit-radial-gradient(60% 40%, closest-corner, #222, #000);
+    background: -moz-radial-gradient(60% 40%, closest-corner, #222, #000);
+    background: -ms-radial-gradient(60% 40%, closest-corner, #222, #000);
+}
+
+/*#footer {
+    background-color: white;
+    color: black;
+    height: 15em;
+}*/
+
+#page {
+}
+
+#bands {
+    width: 29em;
+    margin: -7em auto;
+}
+
+.band {
+    float: left;
+    font-size: 125%;
+    width: 7em;
+    height: 7em;
+    border-style: solid;
+    padding: 2em;
+    display: inline-block;
+    position: relative;
+}
+
+.band p {
+    height: 15em;
+    margin: 25% 0 0 0;
+    text-align: center;
+}
+
+.band.negative {
+    border-color: #111;
+    background-color: black;
+    color: white;
+}
+
+.band.positive {
+    border-color: #eee;
+    background-color: white;
+    color: black;
+}
+
+.band.negative:hover {
+    border-color: #222;
+    background: -webkit-radial-gradient(60% 40%, closest-corner, #444, #111);
+    background: -moz-radial-gradient(60% 40%, closest-corner, #444, #111);
+    background: -ms-radial-gradient(60% 40%, closest-corner, #444, #111);
+}
+
+.band.positive:hover {
+    border-color: #ddd;
+    background: -webkit-radial-gradient(60% 40%, closest-corner, #fff, #ccc);
+    background: -moz-radial-gradient(60% 40%, closest-corner, #fff, #ccc);
+    background: -msradial-gradient(60% 40%, closest-corner, #fff, #ccc);
+}
+
+.band.negative:active {
+    border-color: #111;
+    background: -webkit-radial-gradient(60% 40%, closest-corner, #222, #000);
+    background: -moz-radial-gradient(60% 40%, closest-corner, #222, #000);
+    background: -ms-radial-gradient(60% 40%, closest-corner, #222, #000);
+}
+
+.band.positive:active {
+    border-color: #ccc;
+    background: -webkit-radial-gradient(60% 40%, closest-corner, #ddd, #aaa);
+    background: -moz-radial-gradient(60% 40%, closest-corner, #ddd, #aaa);
+    background: -ms-radial-gradient(60% 40%, closest-corner, #ddd, #aaa);
+}

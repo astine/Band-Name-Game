@@ -9,4 +9,7 @@
                  [enlive "1.1.1"]
                  [incanter "1.4.1"]
                  [compojure "1.1.5"]
-                 [inflections "0.8.0"]])
+                 [inflections "0.8.0"]]
+  :plugins [[lein-ring "0.8.2"]]
+  :ring {:handler band-names.server/app}
+  :profiles {:dev {:dependencies [[ring-mock "0.1.3"]]}})

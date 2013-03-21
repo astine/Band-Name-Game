@@ -224,12 +224,6 @@
                 (capitalize new-word)
                 (lower-case new-word)))))))
           
-  (reduce #(apply clojure.string/replace (cons %1 %2))
-          phrase
-          (shuffle (distinct (repeatedly (inc (rand-int (dec (count misspellings))))
-                                #(rand-nth misspellings))))))
-
-
 (defn band-name-exists? [band-name]
   (boolean (band-names-set band-name)))
 
@@ -249,18 +243,5 @@
                 3 (rapper-name)))
       (generate-band-name)))
 
-
-(defn quiz-name []
-  (let [real-name (rand-nth band-names)
-        false-name (generate-band-name)
-        names (shuffle (list real-name false-name))]
-    (println (str "Which band is real?"))
-    (doseq [[index name]
-            (map list [1 2] names)]
-      (println (str index " " name)))
-    (flush)
-    (if (= (nth names (dec (read-string (read-line))))
-           real-name)
-      (println "Correct!")
-      (println "False!"))))
-
+(defn select-band-name []
+  (rand-nth band-names))
