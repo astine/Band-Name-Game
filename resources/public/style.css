@@ -19,11 +19,11 @@ body {
     background: -ms-radial-gradient(60% 40%, closest-corner, #222, #000);
 }
 
-/*#footer {
+#footer {
     background-color: white;
     color: black;
     height: 15em;
-}*/
+}
 
 #page {
 }
@@ -88,4 +88,8 @@ body {
     background: -webkit-radial-gradient(60% 40%, closest-corner, #ddd, #aaa);
     background: -moz-radial-gradient(60% 40%, closest-corner, #ddd, #aaa);
     background: -ms-radial-gradient(60% 40%, closest-corner, #ddd, #aaa);
+}
+
+#counter {
+    clear: both;
 }

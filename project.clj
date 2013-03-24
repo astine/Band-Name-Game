@@ -12,4 +12,5 @@
                  [inflections "0.8.0"]]
   :plugins [[lein-ring "0.8.2"]]
   :ring {:handler band-names.server/app}
-  :profiles {:dev {:dependencies [[ring-mock "0.1.3"]]}})
+  :profiles {:dev {:dependencies [[ring-mock "0.1.3"]
+                                  [ring-serve "0.1.2"]]}})
