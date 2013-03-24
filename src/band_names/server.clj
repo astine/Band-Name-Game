@@ -37,14 +37,15 @@
 (defn band-name-pick [choice count {session :session}]
   (if (> (read-string count) (or (:count session) 0))
     (let [correct? (second ((:band-names session) choice))]
-      (band-name-create {:session (assoc session
-                                      :count (read-string count)
-                                      :count-right (if correct? 
-                                                     (inc (or (:count-right session) 0)) 
-                                                     (or (:count-right session) 0))
-                                      :count-wrong (if (not correct?) 
-                                                     (inc (or (:count-wrong session) 0)) 
-                                                     (or (:count-wrong session) 0)))}))
+      (-> (redirect "/")
+          (assoc :session (assoc session
+                            :count (read-string count)
+                            :count-right (if correct? 
+                                           (inc (or (:count-right session) 0)) 
+                                           (or (:count-right session) 0))
+                            :count-wrong (if (not correct?) 
+                                           (inc (or (:count-wrong session) 0)) 
+                                           (or (:count-wrong session) 0))))))
     (response (band-name-template (or (:count-right session) 0)
                                   (or (:count-wrong session) 0)
                                   (or (:count session) 0)

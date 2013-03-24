@@ -20,9 +20,9 @@ body {
 }
 
 #footer {
-    background-color: white;
+    background-color: #111;
     color: black;
-    height: 15em;
+    clear: both;
 }
 
 #page {
@@ -42,6 +42,7 @@ body {
     padding: 2em;
     display: inline-block;
     position: relative;
+    text-decoration: none;
 }
 
 .band p {
@@ -90,6 +91,32 @@ body {
     background: -ms-radial-gradient(60% 40%, closest-corner, #ddd, #aaa);
 }
 
+.press {
+    clear: both;
+}
+
 #counter {
     clear: both;
+    float: left;
+}
+
+#restart {
+    float: right;
+    color: black;
+    padding: 1em;
+}
+
+#restart a {
+    color: white;
+    padding: 0.35em;
+    background: -webkit-radial-gradient(60% 40%, closest-corner, #222, #000);
+    background: -moz-radial-gradient(60% 40%, closest-corner, #222, #000);
+    background: -ms-radial-gradient(60% 40%, closest-corner, #222, #000);
+}
+
+#restart a:hover {
+    border-color: #222;
+    background: -webkit-radial-gradient(60% 40%, closest-corner, #444, #111);
+    background: -moz-radial-gradient(60% 40%, closest-corner, #444, #111);
+    background: -ms-radial-gradient(60% 40%, closest-corner, #444, #111);
 }
