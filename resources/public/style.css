@@ -33,6 +33,42 @@ body {
     margin: -7em auto;
 }
 
+#start-link {
+    float: left;
+    font-size: 125%;
+    width: 14em;
+    height: 7em;
+    border-style: solid;
+    padding: 2em;
+    display: inline-block;
+    position: relative;
+    text-decoration: none;
+
+    border-color: #eee;
+    background-color: white;
+    color: black;
+}
+
+#start-link:hover {
+    border-color: #ddd;
+    background: -webkit-radial-gradient(60% 40%, closest-corner, #fff, #ccc);
+    background: -moz-radial-gradient(60% 40%, closest-corner, #fff, #ccc);
+    background: -msradial-gradient(60% 40%, closest-corner, #fff, #ccc);
+}
+
+#start-link:active {
+    border-color: #ccc;
+    background: -webkit-radial-gradient(60% 40%, closest-corner, #ddd, #aaa);
+    background: -moz-radial-gradient(60% 40%, closest-corner, #ddd, #aaa);
+    background: -ms-radial-gradient(60% 40%, closest-corner, #ddd, #aaa);
+}
+
+#start-link p {
+    height: 15em;
+    margin: 20% 0 0 0;
+    text-align: center;
+}
+
 .band {
     float: left;
     font-size: 125%;
@@ -119,4 +155,10 @@ body {
     background: -webkit-radial-gradient(60% 40%, closest-corner, #444, #111);
     background: -moz-radial-gradient(60% 40%, closest-corner, #444, #111);
     background: -ms-radial-gradient(60% 40%, closest-corner, #444, #111);
+}
+
+#description {
+    clear: both;
+    float: left;
+    padding: 1em;
 }
