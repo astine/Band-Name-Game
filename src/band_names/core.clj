@@ -27,6 +27,8 @@
 
 (def prepositions (slurp-weighted-lines "resources/prepositions/prepositions.txt"))
 
+(def expressions (distinct (slurp-lines "resources/expressions.txt")))
+
 (def male-names (slurp-lines "resources/names/male-first-names.txt"))
 (def female-names (slurp-lines "resources/names/female-first-names.txt"))
 (def last-names (slurp-lines "resources/names/last-names.txt"))
@@ -41,6 +43,13 @@
         forms (map second forms)]
     `(case (rand-nth-weighted ~(vec (map vector (iterate inc 0) weights)))
        ~@(mapcat list (iterate inc 0) forms))))
+
+(defn apply-to-rand-nth [fun lst]
+  (let [index (rand-int (count lst))]
+    (concat
+     (take index lst)
+     (list (fun (first (drop index lst))))
+     (drop (inc index) lst))))
 
 (defn capitalize-words [words]
   (join " " (map capitalize (split words #"\s+"))))
@@ -64,7 +73,6 @@
    [12 0.2]
    [13 0.15]
    [14 0.1]])
-
 
 (defn merge-band-name [{:keys [base-word adjectives
                                verb adverbs
@@ -117,11 +125,10 @@
                  2 (if (:plural? band-name)
                      (recur band-name)
                      (recur (assoc band-name :plural? true)))
-                 1 (if (:band? band-name)
-                     (recur band-name)
+                 0.75 (if (:band? band-name)
+                        (recur band-name)
                      (recur (assoc band-name :band? true))))
         (merge-band-name band-name)))))
-    
 
 (defn musician-name []
   (str (capitalize (rand-do
@@ -144,7 +151,7 @@
                                          (:adverbs band-name))))
                      (recur (assoc band-name :verb (rand-nth-weighted verbs))))
                  2 (recur (assoc band-name :preposition (generate-preposition)))
-                 5 (if (:band? band-name)
+                 4 (if (:band? band-name)
                      (recur band-name)
                      (recur (assoc band-name :band? true))))
         (merge-band-name band-name)))))
@@ -223,7 +230,26 @@
               (if (capitalized? word)
                 (capitalize new-word)
                 (lower-case new-word)))))))
-          
+ 
+(defn band-name-from-expression []
+  (capitalize-words
+   (let [base-name (rand-nth expressions)]
+     (rand-do 5 base-name
+              5 (join " "
+                      (apply-to-rand-nth
+                       (fn [x] (rand-nth-weighted nouns))
+                       (split base-name #"\s+")))
+              2 (misspell base-name)))))
+
+(defn alter-extant-band-name []
+  (let [base-name (rand-nth band-names)]
+    (if (re-seq #"\s" base-name)
+      (join " " 
+            (apply-to-rand-nth 
+             (fn [x] (capitalize (rand-nth-weighted nouns)))
+             (split base-name #"\s+")))
+      (misspell base-name))))
+
 (defn band-name-exists? [band-name]
   (boolean (band-names-set band-name)))
 
@@ -237,6 +263,8 @@
        (rand-do 9 (basic-band-name)
                 9 (misspell (basic-band-name) misspellings 0.2)
                 1 (misspell (basic-band-name) misspellings 0.8)
+                7 (alter-extant-band-name)
+                10 (band-name-from-expression)
                 0.3 (misspell (basic-band-name) leetz 0.7)
                 9 (musician-name)
                 7 (musician-band-name)
