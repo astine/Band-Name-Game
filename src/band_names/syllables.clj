@@ -46,28 +46,30 @@
      1)))
 
 (defn count-syllables [phrase]
-  (reduce 
-   +
-   (for [word (split (replace phrase #"\W" "") #"\s+")]
-     (cond (or (single-syl-nouns word)
-               (single-syl-verbs word)
-               (single-syl-adjectives word)
-               (single-syl-adverbs word))
-           1
-           (or (double-syl-nouns word)
+  (if phrase
+    (reduce 
+     +
+     (for [word (split (replace phrase #"\W" "") #"\s+")]
+       (cond (or (single-syl-nouns word)
+                 (single-syl-verbs word)
+                 (single-syl-adjectives word)
+                 (single-syl-adverbs word))
+             1
+             (or (double-syl-nouns word)
                (double-syl-verbs word)
                (double-syl-adjectives word)
                (double-syl-adverbs word))
-           2
-           (or (triple-syl-nouns word)
-               (triple-syl-verbs word)
-               (triple-syl-adjectives word)
-               (triple-syl-adverbs word))
-           3
-           (or (four-syl-nouns word)
-               (four-syl-verbs word)
-               (four-syl-adjectives word)
-               (four-syl-adverbs word))
-           4
-           :else (simple-syllable-count word)))))
+             2
+             (or (triple-syl-nouns word)
+                 (triple-syl-verbs word)
+                 (triple-syl-adjectives word)
+                 (triple-syl-adverbs word))
+             3
+             (or (four-syl-nouns word)
+                 (four-syl-verbs word)
+                 (four-syl-adjectives word)
+                 (four-syl-adverbs word))
+             4
+             :else (simple-syllable-count word))))
+    0))
    
