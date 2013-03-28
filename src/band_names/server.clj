@@ -8,13 +8,55 @@
         [ring.middleware.session]
         [ring.util.response])
   (:require [compojure.handler :as handler]
-            [compojure.route :as route]))
+            [compojure.route :as route])
+  (:import (javax.crypto Cipher KeyGenerator SecretKey)
+           (javax.crypto.spec SecretKeySpec)
+           (java.security SecureRandom)
+           (java.net URLEncoder)
+           (org.apache.commons.codec.binary Base64)))
 
 (def index (html-resource "www/index.html"))
 (def game (html-resource "www/game.html"))
 (def results (html-resource "www/score.html"))
 
-(defn score-template [count-right count]
+(defn bytes [string]
+  (.getBytes string "UTF-8"))
+
+(defn base64 [binary]
+  (Base64/encodeBase64String binary))
+
+(defn debase64 [string]
+  (Base64/decodeBase64 string))
+
+(defn get-raw-key [seed]
+  (let [keygen (KeyGenerator/getInstance "AES")
+        sr (SecureRandom/getInstance "SHA1PRNG")]
+    (.setSeed sr (bytes seed))
+    (.init keygen 128 sr)
+    (.. keygen generateKey getEncoded)))
+
+(defn get-cipher [mode seed]
+  (let [key-spec (SecretKeySpec. (get-raw-key seed) "AES")
+        cipher (Cipher/getInstance "AES")]
+    (.init cipher mode key-spec)
+    cipher))
+
+(defn encrypt [text key]
+  (let [bytes (bytes text)
+        cipher (get-cipher Cipher/ENCRYPT_MODE key)]
+    (base64 (.doFinal cipher bytes))))
+
+(defn decrypt [text key]
+  (let [cipher (get-cipher Cipher/DECRYPT_MODE key)]
+    (String. (.doFinal cipher (debase64 text)))))
+
+(defn serialize [value]
+  (encrypt (str value) "asdf"))
+
+(defn deserialize [value]
+  (read-string (decrypt value "asdf")))
+
+(defn score-template [{count-right :count-right count :count}]
   (let [score (ceil (* 100 (/ count-right count)))]
     (emit* (at results [:#results]
                (content (list {:tag :p :content (cond (< 90 score) ["Congratulations!"]
@@ -36,8 +78,7 @@
 
 (defn band-name-create [{session :session}]
   (if (and session (:count session) (> (:count session) 10))
-    (redirect (str "/score?count-right=" (:count-right session) 
-                   "&count=" (:count session)))
+    (redirect (str "/score?profile=" (URLEncoder/encode (serialize (dissoc session :band-names)))))
     (let [band-names (zipmap ["negative" "positive"]
                              (shuffle [[(generate-band-name) false]
                                        [(select-band-name) true]]))]
@@ -71,8 +112,7 @@
   (GET "/game" [:as req] (band-name-create req))
   (GET "/answer" [choice count :as req] (band-name-pick choice count req))
   (GET "/restart" [:as req] (band-name-create (assoc req :session {})))
-  (GET "/score" [count-right count] (response (score-template (read-string count-right) 
-                                                              (read-string count))))
+  (GET "/score" [profile] (score-template (deserialize profile)))
   (route/resources "/"))
 
 (def app
